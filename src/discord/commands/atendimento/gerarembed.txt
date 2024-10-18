@@ -1,0 +1,36 @@
+import { Command, URLStore } from "#base";
+import { createEmbed } from "@magicyan/discord";
+import { ApplicationCommandType, TextChannel, ComponentType } from "discord.js";
+
+new Command({
+    name: "gerarembed",
+    description: "Envie isso para abrir uma nova Solicitação de Verba",
+    type: ApplicationCommandType.ChatInput,
+    async run(interaction) {
+        // Armazenar o channelId e o ticket no URLStore
+        const urlStore = new URLStore();
+        urlStore.set("channelId", interaction.channelId);
+        urlStore.set("ticket", interaction.user.id);
+
+        // Criar o embed
+        const embed = createEmbed({
+            title: "***💵 Envie aqui o sua Solicitação 💰***",
+            description: "**💸 Abrindo uma Solicitação de Verba:** \n\nPara abrir sua solicitação clique no link abaixo: \n\n " + `[***Clique aqui para preencher o formulário***](linkdoembed)
+` + "\n\nAo clicar na opção selecionada, você será redirecionado para um formulário aonde você irá digitar sobre o que se trata a solicitação.",
+            color: 0x00FF00, // Cor verde
+            url: "https://discord.com/channels/1285697402409582736/1296200439259463740" // URL do canal
+        });
+
+        // Botão para abrir um novo chamado
+        
+
+        // Enviar o embed para um canal específico (use o ID real do canal)
+        const channel = await interaction.client.channels.fetch("1296200439259463740") as TextChannel;
+        if (channel) {
+            const sentMessage = await channel.send({ embeds: [embed] });         
+        }
+
+        // Responder de forma invisível para o usuário que executou o comando
+        interaction.reply({ ephemeral: true, content: "Embed fixado no canal com sucesso!" });
+    }
+});
